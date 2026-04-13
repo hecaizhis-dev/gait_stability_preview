@@ -1,0 +1,62 @@
+
+
+paths:
+  data_raw: "data/dataset/duo_processed/duo_merged_dataset"  #duo的数据集
+  #data_raw: "data/dataset/stu_cleaned" #大家的数据集，四人份
+  features_output: "algorithm/M1/features_full.txt" #保存特征的位置
+  models_dir: "data/models" #保存模型的位置
+
+
+#下面的代码最好不要修改
+feature_extract:
+  sample_rate: 128.0
+  window_seconds: 8
+  step_seconds: 4 # 滑动窗模式下的步长；per_stride 时为失败时回退步长
+  
+
+stride_detection:
+  #正常人步幅1~1.2秒，分心时代偿0.8~0.9秒，此参数非常影响模型准确度！
+  min_distance_ratio: 0.35
+  rolling_window_seconds: 1.2
+  rolling_min_periods_ratio: 0.5
+  #第一轮峰值检测
+  height_factor_1: 0.4
+  prominence_1: 25.00
+  min_peaks_threshold: 3
+  #步幅时间过滤(s) 
+  stride_time_min: 0.7
+  stride_time_max: 2.0
+  min_valid_stride: 2
+  #IQR异常值过滤
+  iqr_percentile_low: 25
+  iqr_percentile_high: 75
+  iqr_multiplier: 1.5
+
+cadence_detection:
+  steps_per_minute: 120.0
+
+acc_detection: {}
+
+gyr_detection: {}
+
+autocorr_detection:
+  min_valid_stride: 3
+
+harmonic_ratio_detection:
+  resample_length: 128
+  n_harmonics: 20
+
+fatigue_detection:
+  fatigue_window: 5
+
+output:
+  encoding: "utf-8-sig"
+
+# stu_raw_columns_adapter：加速度语义与 duo/M1 特征管线对齐
+# - target: 希望写入 stu_raw_modified 的加速度类型（与训练集 duo 一致时选 with_gravity）
+# - gravity_vector_sa_mps2: 在 SA 传感器坐标系下的重力向量 (X,Y,Z)，单位 m/s²，对应 ACC_X_SA/ACC_Y_SA/ACC_Z_SA
+#   未做个体标定时可用近似；若转换后幅值异常，请按设备佩戴方向调整该向量。
+imu_accel_adapter:
+  target: "with_gravity"
+  gravity_vector_sa_mps2: [0.0, 0.0, -9.80665]
+  input_override: "auto"

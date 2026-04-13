@@ -1,0 +1,11 @@
+---
+description: 分析脚本与报告统一放在 data/analysis
+globs: data/analysis/**,docs/paper/**,algorithm/**/*
+alwaysApply: false
+---
+
+# 分析文件路径约定
+
+- **分析脚本、自动生成的报告（.md）、分析用 CSV/图表** 默认写入 **`data/analysis/`**，不要写到 `docs/paper/` 或 `algorithm/M1/`（除非仅为临时调试）。
+- 分心/疲劳分析入口：`data/analysis/analyze_distraction_vs_fatigue.py`；产出与脚本同目录。
+- 特征表来源仍为 `algorithm/M1/features_full.txt`。
